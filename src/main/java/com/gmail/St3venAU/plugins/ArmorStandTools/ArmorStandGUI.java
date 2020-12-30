@@ -217,6 +217,11 @@ class ArmorStandGUI implements Listener {
             default:
                 return;
         }
+
+        if (as.getCustomName() != null) {
+            as.setVisible(true);
+        }
+
         i.setItem(t.getSlot(), updateLore(t));
     }
 

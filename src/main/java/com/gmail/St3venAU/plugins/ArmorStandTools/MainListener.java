@@ -485,6 +485,10 @@ public class MainListener implements Listener {
             b.removeMetadata("setName", plugin);
             b.removeMetadata("setSkull", plugin);
             b.setType(Material.AIR);
+
+            if (as.getCustomName() != null) {
+                as.setVisible(true);
+            }
         }
     }
 
