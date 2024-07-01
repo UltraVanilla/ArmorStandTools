@@ -26,6 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -43,7 +44,6 @@ public class AST extends JavaPlugin {
     static final HashMap<UUID, AbstractMap.SimpleEntry<UUID, Integer>> waitingForSkull = new HashMap<>(); // Player UUID, <ArmorStand UUID, Task ID>
 
     static AST plugin;
-    static String nmsVersion;
 
     static final Pattern MC_USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{1,16}$");
 
@@ -67,24 +67,6 @@ public class AST extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        nmsVersion = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        if( nmsVersion.startsWith("v1_4")  ||
-            nmsVersion.startsWith("v1_5")  ||
-            nmsVersion.startsWith("v1_6")  ||
-            nmsVersion.startsWith("v1_7")  ||
-            nmsVersion.startsWith("v1_8")  ||
-            nmsVersion.startsWith("v1_9")  ||
-            nmsVersion.startsWith("v1_10") ||
-            nmsVersion.startsWith("v1_11") ||
-            nmsVersion.startsWith("v1_12") ||
-            nmsVersion.startsWith("v1_13") ||
-            nmsVersion.startsWith("v1_14") ||
-            nmsVersion.startsWith("v1_15") ||
-            nmsVersion.startsWith("v1_16")) {
-            getLogger().warning("This Craftbukkit/Spigot version is not supported. Craftbukkit/Spigot 1.17+ required. Loading plugin failed.");
-            setEnabled(false);
-            return;
-        }
         getServer().getPluginManager().registerEvents(new  MainListener(), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         Commands cmds = new Commands();
@@ -136,7 +118,6 @@ public class AST extends JavaPlugin {
         waitingForName.clear();
         waitingForSkull.clear();
     }
-
     static void returnArmorStand(ArmorStand as) {
         if(as == null) return;
         if(as.hasMetadata("clone")) {
@@ -158,19 +139,31 @@ public class AST extends JavaPlugin {
         as.remove();
     }
 
+    private static boolean matches(ItemStack one, ItemStack two) {
+        if(one == null || two == null || one.getItemMeta() == null || two.getItemMeta() == null) return false;
+        String NameOne = one.getItemMeta().getDisplayName();
+        List<String> LoreOne = one.getItemMeta().getLore();
+        if(LoreOne == null) return false;
+        String NameTwo = two.getItemMeta().getDisplayName();
+        List<String> LoreTwo = two.getItemMeta().getLore();
+        if(LoreTwo == null) return false;
+        return NameOne.equals(NameTwo) && LoreOne.equals(LoreTwo);
+    }
     private static void removeAllTools(Player p) {
         PlayerInventory i = p.getInventory();
         for(ArmorStandTool t : ArmorStandTool.values()) {
-            i.remove(t.getItem());
+            for(int slot = 0; slot < i.getSize(); slot++) {
+                if(matches(t.getItem(), i.getItem(slot))) {
+                    i.setItem(slot, null);
+                }
+            }
         }
     }
-
     void saveInventoryAndClear(Player p) {
         ItemStack[] inv = p.getInventory().getContents().clone();
         savedInventories.put(p.getUniqueId(), inv);
         p.getInventory().clear();
     }
-
     static void restoreInventory(Player p) {
         removeAllTools(p);
         UUID uuid = p.getUniqueId();

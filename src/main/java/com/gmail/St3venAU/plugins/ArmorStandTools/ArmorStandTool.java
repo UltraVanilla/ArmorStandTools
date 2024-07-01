@@ -42,14 +42,12 @@ public enum ArmorStandTool {
     SUMMON  ("summon",      Material.ARMOR_STAND,            0,  false, "astools.summon",  false),
     GUI     ("gui",         Material.NETHER_STAR,            1,  false, "astools.use",     false),
     ROTAT   ("rotat",       Material.MAGMA_CREAM,            2,  false, "astools.use",     false),
-    CLONE   ("gui_clone",   Material.GLOWSTONE_DUST,         44, true,  "astools.clone",   false),
     GEN_CMD ("gui_gen_cmd", Material.COMMAND_BLOCK,          53, true,  "astools.cmdblock",false),
     INVIS   ("gui_invis",   Material.GOLD_NUGGET,            42, true,  "astools.use",     false),
     SIZE    ("gui_size",    Material.EMERALD,                51, true,  "astools.use",     false),
     BASE    ("gui_base",    Material.STONE_SLAB,             41, true,  "astools.use",     false),
     GRAV    ("gui_grav",    Material.GHAST_TEAR,             49, true,  "astools.use",     false),
     ARMS    ("gui_arms",    Material.ARROW,                  40, true,  "astools.use",     false),
-    NAME    ("gui_name",    Material.NAME_TAG,               39, true,  "astools.use",     false),
     SLOTS   ("gui_slots",   Material.IRON_HOE,               43, true,  "astools.use",     false),
     PHEAD   ("gui_pHead",   Material.PLAYER_HEAD,            48, true,  "astools.head",    false),
     INVUL   ("gui_invul",   Material.GLISTERING_MELON_SLICE, 50, true,  "astools.use",     false),
@@ -60,8 +58,7 @@ public enum ArmorStandTool {
     RARM    ("gui_rarm",    Material.REDSTONE_TORCH,         15, true,  "astools.use",     true),
     LARM    ("gui_larm",    Material.TORCH,                  17, true,  "astools.use",     true),
     RLEG    ("gui_rleg",    Material.BLAZE_ROD,              24, true,  "astools.use",     true),
-    LLEG    ("gui_lleg",    Material.BONE,                   26, true,  "astools.use",     true),
-    ITEM    ("gui_item",    Material.ARMOR_STAND,            34, true,  "astools.use",     false);
+    LLEG    ("gui_lleg",    Material.BONE,                   26, true,  "astools.use",     true);
 
     private final ItemStack item;
     private final String config_id;
@@ -234,8 +231,6 @@ public enum ArmorStandTool {
                 return setLore(item, ChatColor.AQUA + Config.invul + ": " + (as.isInvulnerable() ? (ChatColor.GREEN + Config.isOn) : (ChatColor.RED + Config.isOff)));
             case SLOTS:
                 return setLore(item, ChatColor.AQUA + Config.equip + ": " + (Utils.hasDisabledSlots(as) ? (ChatColor.GREEN + Config.locked) : (ChatColor.RED + Config.unLocked)));
-            case NAME:
-                return setLore(item, ChatColor.AQUA + Config.currently + ": " + (as.getCustomName() == null ? (ChatColor.BLUE + Config.none) : (ChatColor.GREEN + as.getCustomName())));
             case PHEAD:
                 String name = plrHeadName(as);
                 return setLore(item, ChatColor.AQUA + Config.currently + ": " + (name == null ? (ChatColor.BLUE + Config.none) : (ChatColor.GREEN + name)));

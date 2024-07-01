@@ -193,16 +193,6 @@ class ArmorStandGUI implements Listener {
                 p.closeInventory();
                 t.showTitle(p);
                 break;
-            case INVIS:
-                as.setVisible(!as.isVisible());
-                Utils.title(p, Config.asVisible + ": " + (as.isVisible() ? Config.isTrue : Config.isFalse));
-                break;
-            case CLONE:
-                p.closeInventory();
-                ArmorStand clone = Utils.cloneArmorStand(as);
-                AST.pickUpArmorStand(clone, p, true);
-                Utils.title(p, Config.carrying);
-                break;
             case GEN_CMD:
                 String command = Utils.createSummonCommand(as);
                 p.sendMessage(command);
@@ -234,10 +224,6 @@ class ArmorStandGUI implements Listener {
                 as.setArms(!as.hasArms());
                 Utils.title(p, Config.arms + ": " + (as.hasArms() ? Config.isOn : Config.isOff));
                 break;
-            case NAME:
-                p.closeInventory();
-                AST.setName(p, as);
-                break;
             case PHEAD:
                 p.closeInventory();
                 AST.setPlayerSkull(p, as);
@@ -261,22 +247,10 @@ class ArmorStandGUI implements Listener {
                 as.setGlowing(glowing);
                 Utils.title(p, Config.glow + ": " + (glowing ? Config.isOn : Config.isOff));
                 break;
-            case ITEM:
-                World w = p.getWorld();
-                boolean commandFeedback = Boolean.TRUE.equals(w.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK));
-                if(commandFeedback) w.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Utils.createGiveCommand(as, p));
-                if(commandFeedback) w.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, true);
-                p.closeInventory();
-                if(p.getGameMode() != GameMode.CREATIVE) {
-                    as.remove();
-                }
-                break;
             default:
                 return;
         }
         i.setItem(t.getSlot(), t.updateLore(as));
-
         as.setVisible(true);
     }
 
